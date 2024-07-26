@@ -69,6 +69,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watchEffect } from 'vue';
+declare var Swal: any;
 
 // ===== 定義型別 =====
 interface SweetAlertResult {
