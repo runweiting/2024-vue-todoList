@@ -21,7 +21,7 @@
           :editTodoId="editTodoId"
           :editTodoText="editTodoText"
           />
-          <ClearCompletedComponent :numOfActive="numOfActive" />
+          <ClearCompletedComponent />
         </div>
       </div>
     </div>
@@ -44,7 +44,6 @@ const { todos, inputText, editTodoId, editTodoText } = storeToRefs(todosStore);
 
 const todoStatus = ref<Status>(Status.all);
 const filterTodos = ref<Todo[]>([]);
-const numOfActive = ref<number>(0);
 // ===== 篩選 Todos =====
 const updateTodos = (todos: Todo[]) => {
   filterTodos.value = todos

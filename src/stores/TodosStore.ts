@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { Ref } from 'vue'
 import type { Todo, GetTodosResponse, TodoResponse } from '@/interfaces/Todo'
@@ -23,12 +23,12 @@ const useTodosStore = defineStore('useTodosStore', () => {
   const editTodoId: Ref<string | null> = ref(null)
   const editTodoText: Ref<string> = ref('')
   // ===== 設置 LocalStorage =====
-  // const initializeTodos = (): void => {
-  //   const storedTodos = localStorage.getItem(config.localStorageKeyData)
-  //   if (storedTodos) {
-  //     todos.value = JSON.parse(storedTodos)
-  //   }
-  // }
+  const initializeTodos = (): void => {
+    const storedTodos = localStorage.getItem(config.localStorageKeyData)
+    if (storedTodos) {
+      todos.value = JSON.parse(storedTodos)
+    }
+  }
   const saveTodosToLocalStorage = (): void => {
     localStorage.setItem(config.localStorageKeyData, JSON.stringify(todos.value))
   }
@@ -36,7 +36,7 @@ const useTodosStore = defineStore('useTodosStore', () => {
     localStorage.removeItem(config.localStorageKeyData)
   }
   watch(todos, saveTodosToLocalStorage, { deep: true })
-  // initializeTodos()
+  initializeTodos()
   // ===== 取得代辦事項 =====
   const getTodos = async (): Promise<void> => {
     const url = `${config.apiUrl}/todos/`
@@ -119,6 +119,9 @@ const useTodosStore = defineStore('useTodosStore', () => {
       errorToast(errorResponse.message)
     }
   }
+  // ===== 篩選 activeTodos 並取得 numOfActive =====
+  const activeTodos = computed(() => todos.value.filter((todo) => !todo.status))
+  const numOfActive = computed(() => activeTodos.value.length)
 
   return {
     todos,
@@ -131,7 +134,8 @@ const useTodosStore = defineStore('useTodosStore', () => {
     editTodoText,
     updateTodo,
     toggleTodo,
-    deleteTodosFromLocalStorage
+    deleteTodosFromLocalStorage,
+    numOfActive
   }
 })
 export default useTodosStore
