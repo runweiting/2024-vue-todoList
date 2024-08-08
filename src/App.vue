@@ -84,14 +84,19 @@ import { getTokenCookie } from '@/utils/tokenCookie'
 import { errorToast, successToast } from '@/utils/swalToasts'
 
 const usersStore = useUsersStore();
-const { isLoggedIn } = storeToRefs(usersStore);
-const token = ref<string>('');
+const { token } = storeToRefs(usersStore);
+const isLoggedIn = ref(false)
 onMounted( () => {
   token.value = getTokenCookie();
   if (!token.value) {
     errorToast("請先登入")
   } else {
     successToast("成功登入")
+  }
+})
+usersStore.$subscribe((mutations, state) => {
+  if (state.token) {
+    isLoggedIn.value = true
   }
 })
 // ===== Composition API + VeeValidate + Zod =====

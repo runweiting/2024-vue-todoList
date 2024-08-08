@@ -1,22 +1,15 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import type { ApiResponse, ErrorResponse } from '@/interfaces/Response'
-import type {
-  SigninForm,
-  SignupForm,
-  SuccessSigninResponse,
-  SuccessSignoutResponse,
-  UserResponse
-} from '@/interfaces/User'
+import type { SigninForm, SignupForm, SuccessSigninResponse, UserResponse } from '@/interfaces/User'
 import { config } from '../config/env'
 import { successToast, errorToast } from '@/utils/swalToasts'
 import useTodosStore from './TodosStore'
 import { setTokenCookie, deleteTokenCookie } from '@/utils/tokenCookie'
 import { ref } from 'vue'
-import type { Ref } from 'vue'
 
 const useUsersStore = defineStore('useUsersStore', () => {
-  const isLoggedIn: Ref<boolean> = ref(false)
+  const token = ref<string>('')
   const todosStore = useTodosStore()
   const signup = async (form: SignupForm): Promise<void> => {
     const url = `${config.apiUrl}/users/sign_up`
@@ -36,7 +29,6 @@ const useUsersStore = defineStore('useUsersStore', () => {
       setTokenCookie(token, 7)
       axios.defaults.headers.common['Authorization'] = token
       await todosStore.getTodos()
-      isLoggedIn.value = !isLoggedIn.value
       successToast('登入成功')
     } catch (err: any) {
       const errorResponse: ErrorResponse = err.response.data
@@ -60,7 +52,6 @@ const useUsersStore = defineStore('useUsersStore', () => {
       deleteTokenCookie()
       todosStore.deleteTodosFromLocalStorage()
       todosStore.todos = []
-      isLoggedIn.value = !isLoggedIn.value
       successToast(res.data.message)
     } catch (err: any) {
       const errorResponse: ErrorResponse = err.response
@@ -69,7 +60,7 @@ const useUsersStore = defineStore('useUsersStore', () => {
   }
 
   return {
-    isLoggedIn,
+    token,
     signin,
     signup,
     checkToken,
