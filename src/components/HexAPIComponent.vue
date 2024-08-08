@@ -3,12 +3,13 @@
     <div class="container px-0">
       <div class="row gx-0">
         <small>六角學院 - TodoList API</small>
-        <div class="input-group mt-1 mb-3 shadow border border-white bg-white" style="border: 5px solid white !important; border-radius: .5rem !important">
+        <!-- <div class="input-group mt-1 mb-3 shadow border border-white bg-white" style="border: 5px solid white !important; border-radius: .5rem !important">
           <input v-model.trim="inputText" @keyup.enter="todosStore.createTodo(inputText)" type="text" class="form-control border-0" placeholder="新增代辦事項" aria-label="addTodo" aria-describedby="addTodo">
           <button @click="todosStore.createTodo(inputText)" class="btn btn-dark btn-addTodo" type="button">
             <i class="fa-solid fa-plus fs-3"></i>
           </button>
-        </div>
+        </div> -->
+        <AddTodoComponent :inputText="inputText" @add-todo="todosStore.createTodo" />
       </div>
     </div>
     <div class="container px-0 shadow border-0 bg-white" style="border-radius: .5rem !important">
@@ -64,6 +65,7 @@ import { ref, computed, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 import useTodosStore from '@/stores/TodosStore'
 import type { Todo } from '../interfaces/Todo';
+import AddTodoComponent from '@/components/AddTodoComponent.vue';
 
 const todosStore = useTodosStore();
 // storeToRefs 從 store 中提取響應式屬性

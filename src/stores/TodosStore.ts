@@ -50,10 +50,10 @@ const useTodosStore = defineStore('useTodosStore', () => {
   }
   // ===== 新增代辦事項 =====
   const createTodo = async (content: Todo['content']): Promise<void> => {
+    if (!content.trim()) return
     const url = `${config.apiUrl}/todos/`
     try {
       await axios.post(url, { content })
-      inputText.value = ''
       await getTodos()
     } catch (err: any) {
       const errorResponse: ErrorResponse['message'] = err.response.data

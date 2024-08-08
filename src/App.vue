@@ -85,7 +85,7 @@ import { errorToast, successToast } from '@/utils/swalToasts'
 
 const usersStore = useUsersStore();
 const { isLoggedIn } = storeToRefs(usersStore);
-let token = ref<string>('');
+const token = ref<string>('');
 onMounted( () => {
   token.value = getTokenCookie();
   if (!token.value) {
@@ -124,7 +124,6 @@ const [signinEmail, signinEmailAttrs] = defineSigninField('signinEmail');
 const [signinPassword, signinPasswordAttrs] = defineSigninField('signinPassword');
 // 4. handleSubmit 進行表單驗證
 const handleSignup = handleSignupSubmit(async (values, { resetForm: signupResetForm }): Promise<void> => {
-  console.log('values', values);
   if (!signupEmail.value || !signupPassword.value || !signupNickname.value) {
     console.error('Email、密碼或匿稱不能為空');
     return;
