@@ -16,3 +16,8 @@ export interface TodoResponse {
   status: boolean
   message: string
 }
+export enum Status {
+  all,
+  active,
+  done
+}

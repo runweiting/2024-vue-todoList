@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, toRefs, ref, watch } from 'vue'
+import { defineProps, defineEmits, ref, watch } from 'vue'
 
 /* 傳入子元件的 inputText 還是 ref 物件嗎？
 1. inputText 在 todosStore 定義為 Ref<string>
@@ -19,6 +19,12 @@ import { defineProps, defineEmits, toRefs, ref, watch } from 'vue'
 */
 
 const props = defineProps<{ inputText: string }>()
+/* emits 多個事件寫法
+const emit = defineEmits<{
+  (e: 'add-todo', value: string): void
+  (e: 'delete-todo', id: number): void
+}>()
+*/ 
 const emits = defineEmits<{
   (e: 'add-todo', value: string): void
 }>()

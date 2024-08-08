@@ -3,32 +3,15 @@
     <div class="container px-0">
       <div class="row gx-0">
         <small>六角學院 - TodoList API</small>
-        <!-- <div class="input-group mt-1 mb-3 shadow border border-white bg-white" style="border: 5px solid white !important; border-radius: .5rem !important">
-          <input v-model.trim="inputText" @keyup.enter="todosStore.createTodo(inputText)" type="text" class="form-control border-0" placeholder="新增代辦事項" aria-label="addTodo" aria-describedby="addTodo">
-          <button @click="todosStore.createTodo(inputText)" class="btn btn-dark btn-addTodo" type="button">
-            <i class="fa-solid fa-plus fs-3"></i>
-          </button>
-        </div> -->
         <AddTodoComponent :inputText="inputText" @add-todo="todosStore.createTodo" />
       </div>
     </div>
     <div class="container px-0 shadow border-0 bg-white" style="border-radius: .5rem !important">
       <div class="row gx-0">
         <div class="col px-0">
-          <div class="d-flex">
-            <button
-            @click="setTodoStatus(TodoStatus.all)"
-            :disabled="todoStatus === TodoStatus.all"
-            type="button" class="btn btn-white hvr-bl">全部</button>
-            <button
-            @click="setTodoStatus(TodoStatus.active)"
-            :disabled="todoStatus === TodoStatus.active"
-            type="button" class="btn btn-white hvr-bl">待完成</button>
-            <button
-            @click="setTodoStatus(TodoStatus.done)"
-            :disabled="todoStatus === TodoStatus.done"
-            type="button" class="btn btn-white hvr-bl">已完成</button>
-          </div>
+          <FilterTodoComponent :todos="todos" :todoStatus="todoStatus"
+          @filter-todo="updateTodos"
+          />
         </div>
       </div>
       <div class="row gx-0">
@@ -65,10 +48,11 @@ import { ref, computed, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 import useTodosStore from '@/stores/TodosStore'
 import type { Todo } from '../interfaces/Todo';
+import { Status } from '../interfaces/Todo';
 import AddTodoComponent from '@/components/AddTodoComponent.vue';
+import FilterTodoComponent from './FilterTodoComponent.vue';
 
 const todosStore = useTodosStore();
-// storeToRefs 從 store 中提取響應式屬性
 const { todos, inputText, editTodoId, editTodoText } = storeToRefs(todosStore);
 
 // ===== 編輯指定代辦事項 （複製、更新） =====
@@ -76,37 +60,22 @@ const copyTodo = (todo: Todo) => {
   editTodoId.value = todo.id;
   editTodoText.value = todo.content;
 }
-// ===== 重組資料 computed =====
-enum TodoStatus {
-  all,
-  active,
-  done
-};
-const todoStatus = ref<TodoStatus>(TodoStatus.all);
-const setTodoStatus = (status: TodoStatus) => {
-  todoStatus.value = status;
+// ===== 篩選 Todos =====
+const todoStatus = ref<Status>(Status.all);
+const filterTodos = ref<Todo[]>([]);
+const updateTodos = (todos: Todo[]) => {
+  filterTodos.value = todos
 }
-// 根據 todoStatus 篩選待辦事項
-const filterTodos = computed<Todo[]>(() => {
-  switch (todoStatus.value) {
-    case TodoStatus.active:
-      return todos.value.filter((item) => !item.status)
-    case TodoStatus.done:
-      return todos.value.filter((item) => item.status)
-    default:
-      return todos.value
-  }
-})
 // ===== watchEffect =====
 // 監聽 filterTodos 並更新 NumOfActive
 const numOfActive = ref<number>(0);
-watchEffect(() => {
-  if (todoStatus.value === TodoStatus.active) {
-    numOfActive.value = filterTodos.value.length
-  } else {
-    numOfActive.value = todos.value.filter((item) => !item.status).length;
-  }
-})
+// watchEffect(() => {
+//   if (todoStatus.value === TodoStatus.active) {
+//     numOfActive.value = filterTodos.value.length
+//   } else {
+//     numOfActive.value = todos.value.filter((item) => !item.status).length;
+//   }
+// })
 </script>
 
 <style>
